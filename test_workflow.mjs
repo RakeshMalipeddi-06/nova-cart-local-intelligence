@@ -1,5 +1,16 @@
 async function runTest() {
-  console.log("=== STEP 1: Search 'Cold Coffee' ===");
+  console.log("=== STEP 0: Reset Demo State ===");
+  const resetRes = await fetch('http://localhost:3000/api/demo/reset', {
+    method: 'POST'
+  });
+  const resetData = await resetRes.json();
+  if (!resetRes.ok || !resetData.success) {
+    console.error("Failed to reset demo state:", resetData);
+    process.exit(1);
+  }
+  console.log("Demo state reset:", resetData.message);
+
+  console.log("\n=== STEP 1: Search 'Cold Coffee' ===");
   const search1Res = await fetch('http://localhost:3000/api/products/search?q=Cold%20Coffee');
   const search1 = await search1Res.json();
   console.log(`Found ${search1.count} results:`);
@@ -9,6 +20,7 @@ async function runTest() {
 
   const store3Before = search1.results.find(r => r.store.id === 'store-3');
   console.log("\nStore 3 (XYZ Daily Needs) status before confirmation:", store3Before?.intelligence?.status);
+  console.log("Store 3 (XYZ Daily Needs) confidence before confirmation:", store3Before?.intelligence?.confidence);
 
   console.log("\n=== STEP 2: Fetch Store 3 Inventory Health ===");
   const healthRes = await fetch('http://localhost:3000/api/stores/store-3/inventory-health');

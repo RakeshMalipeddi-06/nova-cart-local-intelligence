@@ -5,7 +5,7 @@ export const dynamic = 'force-dynamic';
 
 export async function GET(request, { params }) {
   try {
-    const { id } = params;
+    const { id } = await params;
     const healthData = novaState.getStoreInventoryHealth(id);
 
     if (!healthData) {
